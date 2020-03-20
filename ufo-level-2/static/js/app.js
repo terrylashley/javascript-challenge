@@ -1,9 +1,11 @@
 // from data.js
 var tableData = data;
 var tbody = d3.select('tbody');
+var input = d3.selectAll('input');
 var btn = d3.select('button');
 
 populateTable(tableData);
+input.on('change', handleChange);
 btn.on('click', handleClick);
 
 // =============================================
@@ -21,14 +23,23 @@ function populateTable(data) {
     });
 };
 
-function handleClick() {
-    var date = d3.select('input').property('value');
-    var filteredData = tableData;
+var filteredData = tableData;
 
-    if (date) {
-        filteredData = filteredData.filter(row => row.datetime === date);
+function handleChange() {
+
+    var key = d3.select(this).property('id');
+    var value = d3.select(this).property('value');
+
+    if (value) {
+        filteredData = filteredData.filter(row => row[key] === value);
     };
 
-    d3.select('input').property('value', '');
+    populateTable(filteredData);
+}
+
+function handleClick() {
+    input.property("value", "");
+    filteredData = tableData;
+
     populateTable(filteredData);
 }
